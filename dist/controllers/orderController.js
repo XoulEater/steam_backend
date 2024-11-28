@@ -9,59 +9,34 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-const Wishlist_1 = require("./../models/Wishlist");
-class WishlistController {
+const Cart_1 = require("./../models/Cart");
+const Order_1 = require("./../models/Order");
+class OrderController {
     /**
-     * Add to wishlist
+     * Create order
      * @param req
      * @param res
      */
-    addToWishlist(req, res) {
+    createOrder(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { game } = req.body;
-                const wishlist = yield Wishlist_1.WishlistModel.findOne({
-                    userId: req.params.id,
-                });
-                if (!wishlist) {
-                    yield Wishlist_1.WishlistModel.create({
-                        userId: req.params.id,
-                        games: [game],
-                    });
-                }
-                else {
-                    wishlist.games.push(game);
-                    yield wishlist.save();
-                }
-            }
-            catch (error) {
-                if (error instanceof Error) {
-                    res.status(500).json({ message: error.message });
-                }
-                else {
-                    res.status(500).json({ message: "An unknown error occurred" });
-                }
-            }
-        });
-    }
-    /**
-     * Remove from wishlist
-     * @param req
-     * @param res
-     */
-    removeFromWishlist(req, res) {
-        return __awaiter(this, void 0, void 0, function* () {
-            try {
-                const { game } = req.body;
-                const wishlist = yield Wishlist_1.WishlistModel.findOne({
-                    userId: req.params.id,
-                });
-                if (!wishlist) {
-                    res.status(404).json({ message: "Wishlist not found" });
+                // get the cart from the user
+                const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
+                if (!cart || cart.games.length === 0) {
+                    res.status(404).send({ message: "Cart not found" });
                     return;
                 }
-                wishlist.games = wishlist.games.filter((g) => g._id.toString() !== game._id);
-                yield wishlist.save();
+                // create the order
+                yield Order_1.OrderModel.create({
+                    userId: req.params.id,
+                    games: cart.games,
+                    total: cart.total,
+                });
+                // clear the cart
+                cart.games = [];
+                cart.total = 0;
+                yield cart.save();
+                res.status(201).send({ message: "Order created" });
             }
             catch (error) {
                 if (error instanceof Error) {
@@ -74,17 +49,64 @@ class WishlistController {
         });
     }
     /**
-     * Get wishlist by user id
+     * Get orders by user id
      * @param req
      * @param res
      */
-    getWishlistByUserId(req, res) {
+    getOrdersByUserId(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const wishlist = yield Wishlist_1.WishlistModel.findOne({
-                    userId: req.params.id,
-                });
-                res.status(200).json(wishlist);
+                const orders = yield Order_1.OrderModel.find({ userId: req.params.id });
+                res.send(orders);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    res.status(500).json({ message: error.message });
+                }
+                else {
+                    res.status(500).json({ message: "An unknown error occurred" });
+                }
+            }
+        });
+    }
+    /**
+     * Get all orders
+     * @param req
+     * @param res
+     */
+    getAllOrders(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const orders = yield Order_1.OrderModel.find();
+                res.send(orders);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    res.status(500).json({ message: error.message });
+                }
+                else {
+                    res.status(500).json({ message: "An unknown error occurred" });
+                }
+            }
+        });
+    }
+    /**
+     * Modify order status
+     * @param req
+     * @param res
+     */
+    modifyOrderStatus(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const { status } = req.body;
+                const order = yield Order_1.OrderModel.findById(req.params.id);
+                if (!order) {
+                    res.status(404).json({ message: "Order not found" });
+                    return;
+                }
+                order.status = status;
+                yield order.save();
+                res.json(order);
             }
             catch (error) {
                 if (error instanceof Error) {
@@ -97,5 +119,5 @@ class WishlistController {
         });
     }
 }
-exports.default = WishlistController;
-//# sourceMappingURL=wishlistController.js.map
+exports.default = OrderController;
+//# sourceMappingURL=orderController.js.map

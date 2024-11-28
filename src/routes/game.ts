@@ -23,6 +23,7 @@ router.post(
     gameController.addDiscountToCategory
 );
 router.put("/:id", gameController.updateGame);
+router.put("/:id/stock", gameController.updateStock);
 router.delete("/:id", gameController.deleteGame);
 
 export default router;

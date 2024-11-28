@@ -12,6 +12,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.GameModel = exports.Game = exports.Category = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
 const Discount_1 = require("./Discount");
+const mongoose_1 = require("mongoose");
 class Category {
 }
 exports.Category = Category;
@@ -26,6 +27,10 @@ __decorate([
 class Game {
 }
 exports.Game = Game;
+__decorate([
+    (0, typegoose_1.prop)({ required: false, default: new mongoose_1.Types.ObjectId() }),
+    __metadata("design:type", mongoose_1.Types.ObjectId)
+], Game.prototype, "_id", void 0);
 __decorate([
     (0, typegoose_1.prop)({ required: true }),
     __metadata("design:type", String)

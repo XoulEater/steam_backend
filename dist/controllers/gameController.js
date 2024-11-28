@@ -10,6 +10,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 const Game_1 = require("../models/Game");
+const StockAlert_1 = require("../models/StockAlert");
 class GameController {
     /**
      * Get all games with pagination
@@ -271,6 +272,7 @@ class GameController {
     addDiscountToCategory(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
+                // TODO: Use new Category model
                 yield Game_1.GameModel.updateMany({ categories: { $in: [req.params.category] } }, { discount: req.body.discount });
                 res.status(200).json({ message: "Discount added successfully" });
             }
@@ -419,6 +421,38 @@ class GameController {
     populateGames(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             // TODO: Implement this method
+        });
+    }
+    /**
+     * Update stock of a game
+     * @param req game ID and new stock
+     * @param res success message
+     */
+    updateStock(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                const sales = req.body.sales;
+                const game = yield Game_1.GameModel.findOneAndUpdate({ _id: req.params.id }, { $inc: { stock: -sales, sales: sales } }, { new: true });
+                if (!game) {
+                    res.status(404).json({ message: "Game not found" });
+                    return;
+                }
+                if (game.stock <= 5) {
+                    yield StockAlert_1.StockAlertModel.create({
+                        game: game === null || game === void 0 ? void 0 : game.title,
+                        stock: req.body.stock,
+                    });
+                }
+                res.status(200).json({ message: "Stock updated successfully" });
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    res.status(500).json({ message: error.message });
+                }
+                else {
+                    res.status(500).json({ message: "An unknown error occurred" });
+                }
+            }
         });
     }
 }

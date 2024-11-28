@@ -9,18 +9,23 @@ var __metadata = (this && this.__metadata) || function (k, v) {
     if (typeof Reflect === "object" && typeof Reflect.metadata === "function") return Reflect.metadata(k, v);
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.WhislistModel = exports.Whislist = void 0;
+exports.StockAlertModel = exports.StockAlert = void 0;
 const typegoose_1 = require("@typegoose/typegoose");
-class Whislist {
+// Notification when stock is low
+class StockAlert {
 }
-exports.Whislist = Whislist;
+exports.StockAlert = StockAlert;
 __decorate([
     (0, typegoose_1.prop)({ required: true }),
     __metadata("design:type", String)
-], Whislist.prototype, "userId", void 0);
+], StockAlert.prototype, "game", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ required: true, default: [] }),
-    __metadata("design:type", Array)
-], Whislist.prototype, "games", void 0);
-exports.WhislistModel = (0, typegoose_1.getModelForClass)(Whislist);
-//# sourceMappingURL=Whislist.js.map
+    (0, typegoose_1.prop)({ required: true }),
+    __metadata("design:type", Number)
+], StockAlert.prototype, "stock", void 0);
+__decorate([
+    (0, typegoose_1.prop)({ required: true, default: new Date() }),
+    __metadata("design:type", Date)
+], StockAlert.prototype, "date", void 0);
+exports.StockAlertModel = (0, typegoose_1.getModelForClass)(StockAlert);
+//# sourceMappingURL=StockAlert.js.map

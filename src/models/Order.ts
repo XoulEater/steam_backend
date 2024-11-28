@@ -26,6 +26,9 @@ export class Order {
         enum: ["pending", "inPreparation", "sent", "delivered"],
     })
     public status!: string;
+
+    @prop({ required: true })
+    public createdAt!: Date;
 }
 
 export const OrderModel = getModelForClass(Order);

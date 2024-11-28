@@ -1,7 +1,7 @@
 import { prop, getModelForClass } from "@typegoose/typegoose";
 import { Game } from "./Game";
 
-export class Whislist {
+export class Wishlist {
     @prop({ required: true })
     public userId!: string;
 
@@ -9,4 +9,4 @@ export class Whislist {
     public games!: Game[];
 }
 
-export const WhislistModel = getModelForClass(Whislist);
+export const WishlistModel = getModelForClass(Wishlist);

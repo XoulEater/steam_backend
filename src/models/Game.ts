@@ -12,6 +12,9 @@ export class Category {
 }
 
 export class Game {
+    @prop({ required: false, default: new Types.ObjectId() })
+    public _id!: Types.ObjectId;
+
     @prop({ required: true })
     public title!: string;
 
