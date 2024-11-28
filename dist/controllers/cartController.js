@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Game_1 = require("../models/Game");
 const Cart_1 = require("./../models/Cart");
 class CartController {
     /***
@@ -19,8 +20,11 @@ class CartController {
     addToCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const game = req.body;
-                console.log(game);
+                const game = yield Game_1.GameModel.findById(req.params.gid);
+                if (!game) {
+                    res.status(404).json({ message: "Game not found" });
+                    return;
+                }
                 const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
                 let discount = 0;
                 if (game.discount.type != "none") {
@@ -71,13 +75,16 @@ class CartController {
     removeFromCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const game = req.body;
+                const game = yield Game_1.GameModel.findById(req.params.gid);
+                if (!game) {
+                    res.status(404).json({ message: "Game not found" });
+                    return;
+                }
                 const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
                 if (!cart) {
                     res.status(404).json({ message: "Cart not found" });
                     return;
                 }
-                console.log(cart);
                 const gameIndex = cart.games.findIndex((g) => g.game._id === game._id);
                 if (gameIndex === -1) {
                     res.status(404).json({ message: "Game not found in cart" });

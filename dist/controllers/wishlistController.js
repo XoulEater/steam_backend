@@ -9,6 +9,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Game_1 = require("../models/Game");
 const Wishlist_1 = require("./../models/Wishlist");
 class WishlistController {
     /**
@@ -19,13 +20,17 @@ class WishlistController {
     addToWishlist(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const game = req.body;
+                const game = yield Game_1.GameModel.findById(req.params.gid);
+                if (!game) {
+                    res.status(404).json({ message: "Game not found" });
+                    return;
+                }
                 const wishlist = yield Wishlist_1.WishlistModel.findOne({
-                    userId: req.params.id,
+                    userId: req.params.wid,
                 });
                 if (!wishlist) {
                     yield Wishlist_1.WishlistModel.create({
-                        userId: req.params.id,
+                        userId: req.params.wid,
                         games: [game],
                     });
                 }
@@ -33,6 +38,7 @@ class WishlistController {
                     wishlist.games.push(game);
                     yield wishlist.save();
                 }
+                res.status(201).json({ message: "Game added to wishlist" });
             }
             catch (error) {
                 if (error instanceof Error) {
@@ -52,16 +58,22 @@ class WishlistController {
     removeFromWishlist(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const game = req.body;
+                const gameID = req.params.gid;
                 const wishlist = yield Wishlist_1.WishlistModel.findOne({
-                    userId: req.params.id,
+                    userId: req.params.wid,
                 });
                 if (!wishlist) {
                     res.status(404).json({ message: "Wishlist not found" });
                     return;
                 }
-                wishlist.games = wishlist.games.filter((g) => g._id.toString() !== game._id);
+                const gameIndex = wishlist.games.findIndex((game) => game._id.toString() === gameID);
+                if (gameIndex === -1) {
+                    res.status(404).json({ message: "Game not found" });
+                    return;
+                }
+                wishlist.games.splice(gameIndex, 1);
                 yield wishlist.save();
+                res.status(200).json({ message: "Game removed from wishlist" });
             }
             catch (error) {
                 if (error instanceof Error) {

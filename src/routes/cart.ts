@@ -4,8 +4,8 @@ import CartController from "../controllers/cartController";
 const router = Router();
 const cartController = new CartController();
 
-router.post("/:id/add", cartController.addToCart);
-router.post("/:id/remove", cartController.removeFromCart);
+router.post("/:cid/add/:gid", cartController.addToCart);
+router.post("/:cid/remove/:gid", cartController.removeFromCart);
 router.get("/:id", cartController.getCart);
 router.put("/:id", cartController.updateCart);
 

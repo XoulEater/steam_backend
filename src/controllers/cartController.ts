@@ -1,3 +1,4 @@
+import { GameModel } from "../models/Game";
 import { CartModel } from "./../models/Cart";
 import { Request, Response } from "express";
 
@@ -9,8 +10,12 @@ class CartController {
      */
     public async addToCart(req: any, res: any): Promise<void> {
         try {
-            const game = req.body;
-            console.log(game);
+            const game = await GameModel.findById(req.params.gid);
+
+            if (!game) {
+                res.status(404).json({ message: "Game not found" });
+                return;
+            }
             const cart = await CartModel.findOne({ userId: req.params.id });
 
             let discount = 0;
@@ -60,7 +65,12 @@ class CartController {
      */
     public async removeFromCart(req: any, res: any): Promise<void> {
         try {
-            const game = req.body;
+            const game = await GameModel.findById(req.params.gid);
+
+            if (!game) {
+                res.status(404).json({ message: "Game not found" });
+                return;
+            }
 
             const cart = await CartModel.findOne({ userId: req.params.id });
 
@@ -68,8 +78,6 @@ class CartController {
                 res.status(404).json({ message: "Cart not found" });
                 return;
             }
-
-            console.log(cart);
 
             const gameIndex = cart.games.findIndex(
                 (g) => g.game._id === game._id

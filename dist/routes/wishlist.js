@@ -7,8 +7,8 @@ const express_1 = require("express");
 const wishlistController_1 = __importDefault(require("../controllers/wishlistController"));
 const router = (0, express_1.Router)();
 const wishlistController = new wishlistController_1.default();
-router.post("/:id/add", wishlistController.addToWishlist);
-router.post("/:id/remove", wishlistController.removeFromWishlist);
+router.post("/:wid/add/:gid", wishlistController.addToWishlist);
+router.post("/:wid/remove/:gid", wishlistController.removeFromWishlist);
 router.get("/:id", wishlistController.getWishlistByUserId);
 exports.default = router;
 //# sourceMappingURL=wishlist.js.map

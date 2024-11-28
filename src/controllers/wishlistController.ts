@@ -1,3 +1,4 @@
+import { GameModel } from "../models/Game";
 import { WishlistModel } from "./../models/Wishlist";
 import { Request, Response } from "express";
 
@@ -9,21 +10,28 @@ class WishlistController {
      */
     public async addToWishlist(req: any, res: any): Promise<void> {
         try {
-            const game = req.body;
+            const game = await GameModel.findById(req.params.gid);
+
+            if (!game) {
+                res.status(404).json({ message: "Game not found" });
+                return;
+            }
 
             const wishlist = await WishlistModel.findOne({
-                userId: req.params.id,
+                userId: req.params.wid,
             });
 
             if (!wishlist) {
                 await WishlistModel.create({
-                    userId: req.params.id,
+                    userId: req.params.wid,
                     games: [game],
                 });
             } else {
                 wishlist.games.push(game);
                 await wishlist.save();
             }
+
+            res.status(201).json({ message: "Game added to wishlist" });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message });
@@ -40,10 +48,10 @@ class WishlistController {
      */
     public async removeFromWishlist(req: any, res: any): Promise<void> {
         try {
-            const game = req.body;
+            const gameID = req.params.gid;
 
             const wishlist = await WishlistModel.findOne({
-                userId: req.params.id,
+                userId: req.params.wid,
             });
 
             if (!wishlist) {
@@ -51,11 +59,18 @@ class WishlistController {
                 return;
             }
 
-            wishlist.games = wishlist.games.filter(
-                (g) => g._id.toString() !== game._id
+            const gameIndex = wishlist.games.findIndex(
+                (game) => game._id.toString() === gameID
             );
 
+            if (gameIndex === -1) {
+                res.status(404).json({ message: "Game not found" });
+                return;
+            }
+
+            wishlist.games.splice(gameIndex, 1);
             await wishlist.save();
+            res.status(200).json({ message: "Game removed from wishlist" });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message });

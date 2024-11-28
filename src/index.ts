@@ -6,7 +6,6 @@ import cartRoutes from "./routes/cart";
 import orderRoutes from "./routes/orders";
 import wishlistRoutes from "./routes/wishlist";
 // import dashboardRoutes from "./routes/dashboard";
-
 import cors from "cors";
 
 const app = express();
