@@ -16,7 +16,7 @@ class CartController {
                 res.status(404).json({ message: "Game not found" });
                 return;
             }
-            const cart = await CartModel.findOne({ userId: req.params.id });
+            const cart = await CartModel.findOne({ userId: req.params.cid });
 
             let discount = 0;
             if (game.discount.type != "none") {
@@ -87,7 +87,7 @@ class CartController {
                 return;
             }
 
-            const cart = await CartModel.findOne({ userId: req.params.id });
+            const cart = await CartModel.findOne({ userId: req.params.cid });
 
             if (!cart) {
                 res.status(404).json({ message: "Cart not found" });
