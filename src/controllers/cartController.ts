@@ -9,12 +9,13 @@ class CartController {
      */
     public async addToCart(req: any, res: any): Promise<void> {
         try {
-            const { game } = req.body;
-
+            const game = req.body;
+            console.log(game);
             const cart = await CartModel.findOne({ userId: req.params.id });
 
-            let discount = game.price;
+            let discount = 0;
             if (game.discount.type != "none") {
+                discount = game.price;
                 game.discount.type === "percentage"
                     ? (discount -= game.price * game.discount.value)
                     : (discount -= game.discount.value);
@@ -23,18 +24,26 @@ class CartController {
             if (!cart) {
                 await CartModel.create({
                     userId: req.params.id,
-                    games: [game],
+                    games: [
+                        {
+                            game: game,
+                            quantity: 1,
+                            price: game.price - discount,
+                        },
+                    ],
                     total: game.price - discount,
                 });
             } else {
                 cart.games.push({
-                    game: game._id,
+                    game: game,
                     quantity: 1,
                     price: game.price - discount,
                 });
                 cart.total += game.price - discount;
                 await cart.save();
             }
+
+            res.json({ message: "Game added to cart successfully" });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message });
@@ -51,7 +60,7 @@ class CartController {
      */
     public async removeFromCart(req: any, res: any): Promise<void> {
         try {
-            const { game } = req.body;
+            const game = req.body;
 
             const cart = await CartModel.findOne({ userId: req.params.id });
 
@@ -60,7 +69,11 @@ class CartController {
                 return;
             }
 
-            const gameIndex = cart.games.findIndex((g) => g.game === game._id);
+            console.log(cart);
+
+            const gameIndex = cart.games.findIndex(
+                (g) => g.game._id === game._id
+            );
 
             if (gameIndex === -1) {
                 res.status(404).json({ message: "Game not found in cart" });
@@ -72,6 +85,8 @@ class CartController {
             cart.games.splice(gameIndex, 1);
 
             await cart.save();
+
+            res.json({ message: "Game removed from cart successfully" });
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message });
@@ -95,7 +110,6 @@ class CartController {
                 res.status(404).json({ message: "Cart not found" });
                 return;
             }
-
             res.json(cart);
         } catch (error) {
             if (error instanceof Error) {

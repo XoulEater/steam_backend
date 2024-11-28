@@ -29,7 +29,9 @@ class OrderController {
                 // create the order
                 yield Order_1.OrderModel.create({
                     userId: req.params.id,
-                    games: cart.games,
+                    games: cart.games.map((game) => ({
+                        game: game.game,
+                    })),
                     total: cart.total,
                 });
                 // clear the cart

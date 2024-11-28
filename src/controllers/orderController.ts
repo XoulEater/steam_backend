@@ -21,7 +21,9 @@ class OrderController {
             // create the order
             await OrderModel.create({
                 userId: req.params.id,
-                games: cart.games,
+                games: cart.games.map((game) => ({
+                    game: game.game,
+                })),
                 total: cart.total,
             });
 

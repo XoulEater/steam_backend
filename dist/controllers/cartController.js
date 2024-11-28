@@ -19,10 +19,12 @@ class CartController {
     addToCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { game } = req.body;
+                const game = req.body;
+                console.log(game);
                 const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
-                let discount = game.price;
+                let discount = 0;
                 if (game.discount.type != "none") {
+                    discount = game.price;
                     game.discount.type === "percentage"
                         ? (discount -= game.price * game.discount.value)
                         : (discount -= game.discount.value);
@@ -30,19 +32,26 @@ class CartController {
                 if (!cart) {
                     yield Cart_1.CartModel.create({
                         userId: req.params.id,
-                        games: [game],
+                        games: [
+                            {
+                                game: game,
+                                quantity: 1,
+                                price: game.price - discount,
+                            },
+                        ],
                         total: game.price - discount,
                     });
                 }
                 else {
                     cart.games.push({
-                        game: game._id,
+                        game: game,
                         quantity: 1,
                         price: game.price - discount,
                     });
                     cart.total += game.price - discount;
                     yield cart.save();
                 }
+                res.json({ message: "Game added to cart successfully" });
             }
             catch (error) {
                 if (error instanceof Error) {
@@ -62,13 +71,14 @@ class CartController {
     removeFromCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { game } = req.body;
+                const game = req.body;
                 const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
                 if (!cart) {
                     res.status(404).json({ message: "Cart not found" });
                     return;
                 }
-                const gameIndex = cart.games.findIndex((g) => g.game === game._id);
+                console.log(cart);
+                const gameIndex = cart.games.findIndex((g) => g.game._id === game._id);
                 if (gameIndex === -1) {
                     res.status(404).json({ message: "Game not found in cart" });
                     return;
@@ -77,6 +87,7 @@ class CartController {
                     cart.games[gameIndex].price * cart.games[gameIndex].quantity;
                 cart.games.splice(gameIndex, 1);
                 yield cart.save();
+                res.json({ message: "Game removed from cart successfully" });
             }
             catch (error) {
                 if (error instanceof Error) {

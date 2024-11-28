@@ -1,4 +1,5 @@
 import { prop, getModelForClass } from "@typegoose/typegoose";
+import { Game } from "./Game";
 
 export class Cart {
     @prop({ required: true })
@@ -6,7 +7,7 @@ export class Cart {
 
     @prop({ required: true, type: () => [Object] })
     public games!: {
-        game: string;
+        game: Game;
         quantity: number;
         price: number;
     }[];
