@@ -3,7 +3,9 @@ import mongoose from "mongoose";
 import gameRoutes from "./routes/game";
 import userRoutes from "./routes/user";
 import cartRoutes from "./routes/cart";
-// import orderRoutes from "./routes/order";
+import orderRoutes from "./routes/orders";
+import wishlistRoutes from "./routes/wishlist";
+// import dashboardRoutes from "./routes/dashboard";
 
 import cors from "cors";
 
@@ -30,6 +32,9 @@ const start = async (): Promise<void> => {
 app.use("/games", gameRoutes);
 app.use("/users", userRoutes);
 app.use("/cart", cartRoutes);
+app.use("/orders", orderRoutes);
+app.use("/wishlist", wishlistRoutes);
+// app.use("/dashboard", dashboardRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");
