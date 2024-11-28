@@ -25,4 +25,8 @@ const start = async (): Promise<void> => {
 
 app.use("/games", gameRoutes);
 
+app.get("/", (req, res) => {
+    res.send("Hello World!");
+});
+
 void start();
