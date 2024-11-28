@@ -19,7 +19,7 @@ class WishlistController {
     addToWishlist(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { game } = req.body;
+                const game = req.body;
                 const wishlist = yield Wishlist_1.WishlistModel.findOne({
                     userId: req.params.id,
                 });
@@ -52,7 +52,7 @@ class WishlistController {
     removeFromWishlist(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const { game } = req.body;
+                const game = req.body;
                 const wishlist = yield Wishlist_1.WishlistModel.findOne({
                     userId: req.params.id,
                 });
@@ -84,7 +84,7 @@ class WishlistController {
                 const wishlist = yield Wishlist_1.WishlistModel.findOne({
                     userId: req.params.id,
                 });
-                res.status(200).json(wishlist);
+                res.status(200).json(wishlist === null || wishlist === void 0 ? void 0 : wishlist.games);
             }
             catch (error) {
                 if (error instanceof Error) {

@@ -9,7 +9,7 @@ class WishlistController {
      */
     public async addToWishlist(req: any, res: any): Promise<void> {
         try {
-            const { game } = req.body;
+            const game = req.body;
 
             const wishlist = await WishlistModel.findOne({
                 userId: req.params.id,
@@ -40,7 +40,7 @@ class WishlistController {
      */
     public async removeFromWishlist(req: any, res: any): Promise<void> {
         try {
-            const { game } = req.body;
+            const game = req.body;
 
             const wishlist = await WishlistModel.findOne({
                 userId: req.params.id,
@@ -78,7 +78,7 @@ class WishlistController {
             const wishlist = await WishlistModel.findOne({
                 userId: req.params.id,
             });
-            res.status(200).json(wishlist);
+            res.status(200).json(wishlist?.games);
         } catch (error) {
             if (error instanceof Error) {
                 res.status(500).json({ message: error.message });
