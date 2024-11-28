@@ -33,6 +33,17 @@ class CartController {
                         ? (discount -= game.price * game.discount.value)
                         : (discount -= game.discount.value);
                 }
+                // if game in cart already, increase quantity
+                if (cart && cart.games.length > 0) {
+                    const gameIndex = cart.games.findIndex((g) => g.game._id === game._id);
+                    if (gameIndex !== -1) {
+                        cart.games[gameIndex].quantity++;
+                        cart.total += game.price - discount;
+                        yield cart.save();
+                        res.json({ message: "Game added to cart successfully" });
+                        return;
+                    }
+                }
                 if (!cart) {
                     yield Cart_1.CartModel.create({
                         userId: req.params.id,
