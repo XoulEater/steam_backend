@@ -16,3 +16,5 @@ export class User {
     @prop({ required: false, default: "" })
     public bio!: string;
 }
+
+export const UserModel = getModelForClass(User);

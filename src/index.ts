@@ -1,6 +1,10 @@
 import express from "express";
 import mongoose from "mongoose";
 import gameRoutes from "./routes/game";
+import userRoutes from "./routes/user";
+import cartRoutes from "./routes/cart";
+// import orderRoutes from "./routes/order";
+
 import cors from "cors";
 
 const app = express();
@@ -24,6 +28,8 @@ const start = async (): Promise<void> => {
 };
 
 app.use("/games", gameRoutes);
+app.use("/users", userRoutes);
+app.use("/cart", cartRoutes);
 
 app.get("/", (req, res) => {
     res.send("Hello World!");

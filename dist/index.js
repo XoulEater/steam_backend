@@ -15,6 +15,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const mongoose_1 = __importDefault(require("mongoose"));
 const game_1 = __importDefault(require("./routes/game"));
+const user_1 = __importDefault(require("./routes/user"));
+const cart_1 = __importDefault(require("./routes/cart"));
+// import orderRoutes from "./routes/order";
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -32,6 +35,8 @@ const start = () => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 app.use("/games", game_1.default);
+app.use("/users", user_1.default);
+app.use("/cart", cart_1.default);
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });
