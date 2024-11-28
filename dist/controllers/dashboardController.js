@@ -67,4 +67,5 @@ class DashboardController {
         });
     }
 }
+exports.default = DashboardController;
 //# sourceMappingURL=dashboardController.js.map

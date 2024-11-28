@@ -150,10 +150,25 @@ class CartController {
      */
     public async updateCart(req: any, res: any): Promise<void> {
         try {
-            await CartModel.findOneAndUpdate(
-                { userId: req.params.id },
-                req.body
-            );
+            const cart = await CartModel.findOne({ userId: req.params.id });
+
+            if (!cart) {
+                res.status(404).json({ message: "Cart not found" });
+                return;
+            }
+
+            const newCart = req.body;
+
+            // Recalculate total
+            let total = 0;
+            newCart.games.forEach((game: any) => {
+                total += game.price * game.quantity;
+            });
+
+            cart.games = newCart.games;
+            cart.total = total;
+
+            await cart.save();
 
             res.json({ message: "Cart updated successfully" });
         } catch (error) {

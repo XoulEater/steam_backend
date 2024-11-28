@@ -19,7 +19,7 @@ const user_1 = __importDefault(require("./routes/user"));
 const cart_1 = __importDefault(require("./routes/cart"));
 const orders_1 = __importDefault(require("./routes/orders"));
 const wishlist_1 = __importDefault(require("./routes/wishlist"));
-// import dashboardRoutes from "./routes/dashboard";
+const dashboard_1 = __importDefault(require("./routes/dashboard"));
 const cors_1 = __importDefault(require("cors"));
 const app = (0, express_1.default)();
 app.use((0, cors_1.default)());
@@ -41,7 +41,7 @@ app.use("/users", user_1.default);
 app.use("/cart", cart_1.default);
 app.use("/orders", orders_1.default);
 app.use("/wishlist", wishlist_1.default);
-// app.use("/dashboard", dashboardRoutes);
+app.use("/dashboard", dashboard_1.default);
 app.get("/", (req, res) => {
     res.send("Hello World!");
 });

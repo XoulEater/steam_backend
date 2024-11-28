@@ -150,7 +150,20 @@ class CartController {
     updateCart(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                yield Cart_1.CartModel.findOneAndUpdate({ userId: req.params.id }, req.body);
+                const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
+                if (!cart) {
+                    res.status(404).json({ message: "Cart not found" });
+                    return;
+                }
+                const newCart = req.body;
+                // Recalculate total
+                let total = 0;
+                newCart.games.forEach((game) => {
+                    total += game.price * game.quantity;
+                });
+                cart.games = newCart.games;
+                cart.total = total;
+                yield cart.save();
                 res.json({ message: "Cart updated successfully" });
             }
             catch (error) {
