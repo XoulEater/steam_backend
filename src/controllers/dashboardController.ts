@@ -11,7 +11,7 @@ class DashboardController {
      */
     public async getMostSoldGames(req: Request, res: Response): Promise<void> {
         try {
-            const games = await GameModel.find().sort({ sold: -1 }).limit(5);
+            const games = await GameModel.find().sort({ sales: -1 }).limit(5);
             res.status(200).json(games);
         } catch (error) {
             if (error instanceof Error) {
@@ -61,7 +61,9 @@ class DashboardController {
     public async getNotifications(req: Request, res: Response): Promise<void> {
         try {
             // Get all notifications sorted by date
-            const notifications = await StockAlertModel.find().sort({ date: -1 });
+            const notifications = await StockAlertModel.find().sort({
+                date: -1,
+            });
 
             res.status(200).json(notifications);
         } catch (error) {
@@ -72,7 +74,6 @@ class DashboardController {
             }
         }
     }
-
 }
 
 export default DashboardController;

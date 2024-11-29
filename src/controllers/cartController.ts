@@ -20,11 +20,11 @@ class CartController {
 
             let discount = 0;
             if (game.discount.type != "none") {
-                discount = game.price;
                 game.discount.type === "percentage"
-                    ? (discount -= game.price * game.discount.value)
-                    : (discount -= game.discount.value);
+                    ? (discount = game.price * (game.discount.value / 100))
+                    : (discount = game.discount.value);
             }
+            console.log(discount);
 
             // if game in cart already, increase quantity
             if (cart && cart.games.length > 0) {
@@ -59,6 +59,7 @@ class CartController {
                     quantity: 1,
                     price: game.price - discount,
                 });
+                console.log(game.price, discount);
                 cart.total += game.price - discount;
                 await cart.save();
             }
@@ -95,8 +96,6 @@ class CartController {
             }
 
             // console log the cart game ids
-            console.log(cart.games.map((g) => g.game._id));
-            console.log(game._id);
 
             const gameIndex = cart.games.findIndex(
                 (g) => g.game._id.toString() === game._id.toString()
@@ -171,7 +170,8 @@ class CartController {
                     let discount = game.game.price;
                     game.game.discount.type === "percentage"
                         ? (discount -=
-                              game.game.price * game.game.discount.value)
+                              game.game.price *
+                              (game.game.discount.value / 100))
                         : (discount -= game.game.discount.value);
                     console.log(discount, game.quantity);
                     total += discount * game.quantity;

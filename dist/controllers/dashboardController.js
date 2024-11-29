@@ -21,7 +21,7 @@ class DashboardController {
     getMostSoldGames(req, res) {
         return __awaiter(this, void 0, void 0, function* () {
             try {
-                const games = yield Game_1.GameModel.find().sort({ sold: -1 }).limit(5);
+                const games = yield Game_1.GameModel.find().sort({ sales: -1 }).limit(5);
                 res.status(200).json(games);
             }
             catch (error) {
@@ -76,7 +76,9 @@ class DashboardController {
         return __awaiter(this, void 0, void 0, function* () {
             try {
                 // Get all notifications sorted by date
-                const notifications = yield StockAlert_1.StockAlertModel.find().sort({ date: -1 });
+                const notifications = yield StockAlert_1.StockAlertModel.find().sort({
+                    date: -1,
+                });
                 res.status(200).json(notifications);
             }
             catch (error) {
