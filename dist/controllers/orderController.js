@@ -32,9 +32,7 @@ class OrderController {
                 // create the order
                 yield Order_1.OrderModel.create({
                     userId: req.params.id,
-                    games: cart.games.map((game) => ({
-                        game: game.game,
-                    })),
+                    games: cart.games,
                     total: cart.total,
                     address,
                     paymentMethod,
