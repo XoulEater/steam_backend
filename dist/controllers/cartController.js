@@ -163,8 +163,21 @@ class CartController {
                 // Recalculate total
                 let total = 0;
                 newCart.games.forEach((game) => {
-                    total += game.price * game.quantity;
+                    if (game.game.discount.type !== "none") {
+                        let discount = game.game.price;
+                        game.game.discount.type === "percentage"
+                            ? (discount -=
+                                game.game.price * game.game.discount.value)
+                            : (discount -= game.game.discount.value);
+                        console.log(discount, game.quantity);
+                        total += discount * game.quantity;
+                    }
+                    else {
+                        console.log(game.game.price, game.quantity);
+                        total += game.game.price * game.quantity;
+                    }
                 });
+                console.log(total);
                 cart.games = newCart.games;
                 cart.total = total;
                 yield cart.save();
