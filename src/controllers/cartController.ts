@@ -94,9 +94,15 @@ class CartController {
                 return;
             }
 
+            // console log the cart game ids
+            console.log(cart.games.map((g) => g.game._id));
+            console.log(game._id);
+
             const gameIndex = cart.games.findIndex(
-                (g) => g.game._id === game._id
+                (g) => g.game._id.toString() === game._id.toString()
             );
+
+            console.log(gameIndex);
 
             if (gameIndex === -1) {
                 res.status(404).json({ message: "Game not found in cart" });

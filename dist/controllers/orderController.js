@@ -41,7 +41,7 @@ class OrderController {
                 });
                 // Reduce the stock of the games
                 cart.games.forEach((game) => __awaiter(this, void 0, void 0, function* () {
-                    const updatedGame = yield Game_1.GameModel.findOneAndUpdate({ _id: req.params.id }, { $inc: { stock: -game.quantity, sales: game.quantity } }, { new: true });
+                    const updatedGame = yield Game_1.GameModel.findOneAndUpdate({ _id: game.game._id }, { $inc: { stock: -game.quantity, sales: game.quantity } }, { new: true });
                     if (!updatedGame) {
                         res.status(404).send({ message: "Game not found" });
                         return;

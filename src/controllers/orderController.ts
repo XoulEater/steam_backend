@@ -36,14 +36,16 @@ class OrderController {
             // Reduce the stock of the games
             cart.games.forEach(async (game) => {
                 const updatedGame = await GameModel.findOneAndUpdate(
-                    { _id: req.params.id },
+                    { _id: game.game._id },
                     { $inc: { stock: -game.quantity, sales: game.quantity } },
                     { new: true }
                 );
+
                 if (!updatedGame) {
                     res.status(404).send({ message: "Game not found" });
                     return;
                 }
+
                 if (updatedGame.stock <= 5) {
                     await StockAlertModel.create({
                         game: game.game.title,
