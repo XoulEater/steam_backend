@@ -22,7 +22,6 @@ router.post("/:id/discount", gameController.addDiscount);
 router.delete("/:id/discount", gameController.removeDiscount);
 router.post("/category/:category/discount", gameController.addDiscountToCategory);
 router.put("/:id", gameController.updateGame);
-router.put("/:id/stock", gameController.updateStock);
 router.delete("/:id", gameController.deleteGame);
 exports.default = router;
 //# sourceMappingURL=game.js.map

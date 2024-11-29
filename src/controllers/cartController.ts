@@ -124,7 +124,6 @@ class CartController {
      * @param req
      * @param res
      */
-
     public async getCart(req: any, res: any): Promise<void> {
         try {
             const cart = await CartModel.findOne({ userId: req.params.id });

@@ -1,6 +1,8 @@
+import { GameModel } from "../models/Game";
 import { CartModel } from "./../models/Cart";
 import { OrderModel } from "./../models/Order";
 import { Request, Response } from "express";
+import { StockAlertModel } from "../models/StockAlert";
 
 class OrderController {
     /**
@@ -12,6 +14,8 @@ class OrderController {
         try {
             // get the cart from the user
             const cart = await CartModel.findOne({ userId: req.params.id });
+
+            const { address, paymentMethod } = req.body;
 
             if (!cart || cart.games.length === 0) {
                 res.status(404).send({ message: "Cart not found" });
@@ -25,6 +29,27 @@ class OrderController {
                     game: game.game,
                 })),
                 total: cart.total,
+                address,
+                paymentMethod,
+            });
+
+            // Reduce the stock of the games
+            cart.games.forEach(async (game) => {
+                const updatedGame = await GameModel.findOneAndUpdate(
+                    { _id: req.params.id },
+                    { $inc: { stock: -game.quantity, sales: game.quantity } },
+                    { new: true }
+                );
+                if (!updatedGame) {
+                    res.status(404).send({ message: "Game not found" });
+                    return;
+                }
+                if (updatedGame.stock <= 5) {
+                    await StockAlertModel.create({
+                        game: game.game.title,
+                        stock: req.body.stock,
+                    });
+                }
             });
 
             // clear the cart

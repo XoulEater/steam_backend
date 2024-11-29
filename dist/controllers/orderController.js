@@ -9,8 +9,10 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
     });
 };
 Object.defineProperty(exports, "__esModule", { value: true });
+const Game_1 = require("../models/Game");
 const Cart_1 = require("./../models/Cart");
 const Order_1 = require("./../models/Order");
+const StockAlert_1 = require("../models/StockAlert");
 class OrderController {
     /**
      * Create order
@@ -22,6 +24,7 @@ class OrderController {
             try {
                 // get the cart from the user
                 const cart = yield Cart_1.CartModel.findOne({ userId: req.params.id });
+                const { address, paymentMethod } = req.body;
                 if (!cart || cart.games.length === 0) {
                     res.status(404).send({ message: "Cart not found" });
                     return;
@@ -33,7 +36,23 @@ class OrderController {
                         game: game.game,
                     })),
                     total: cart.total,
+                    address,
+                    paymentMethod,
                 });
+                // Reduce the stock of the games
+                cart.games.forEach((game) => __awaiter(this, void 0, void 0, function* () {
+                    const updatedGame = yield Game_1.GameModel.findOneAndUpdate({ _id: req.params.id }, { $inc: { stock: -game.quantity, sales: game.quantity } }, { new: true });
+                    if (!updatedGame) {
+                        res.status(404).send({ message: "Game not found" });
+                        return;
+                    }
+                    if (updatedGame.stock <= 5) {
+                        yield StockAlert_1.StockAlertModel.create({
+                            game: game.game.title,
+                            stock: req.body.stock,
+                        });
+                    }
+                }));
                 // clear the cart
                 cart.games = [];
                 cart.total = 0;

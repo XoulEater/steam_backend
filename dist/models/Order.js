@@ -39,6 +39,7 @@ __decorate([
         required: true,
         type: String,
         enum: ["pending", "inPreparation", "sent", "delivered"],
+        default: "pending",
     }),
     __metadata("design:type", String)
 ], Order.prototype, "status", void 0);

@@ -9,5 +9,6 @@ const router = (0, express_1.Router)();
 const dashboardController = new dashboardController_1.default();
 router.get("/most-sold-games", dashboardController.getMostSoldGames);
 router.get("/orders-per-day", dashboardController.getOrdersPerDay);
+// Notificaciones
 exports.default = router;
 //# sourceMappingURL=dashboard.js.map

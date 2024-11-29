@@ -147,7 +147,6 @@ class GameController {
      */
     public async createGame(req: Request, res: Response): Promise<void> {
         try {
-            console.log(req.body);
             const game = await GameModel.create(req.body);
 
             res.status(201).json({ game: game.id });
@@ -205,7 +204,6 @@ class GameController {
      */
     public async addReview(req: Request, res: Response): Promise<void> {
         try {
-            console.log(req.body, req.params.id);
             const game = await GameModel.updateOne(
                 { _id: req.params.id },
                 { $push: { reviews: req.body } }
@@ -411,44 +409,6 @@ class GameController {
     // Populate the database with some games
     public async populateGames(req: Request, res: Response): Promise<void> {
         // TODO: Implement this method
-    }
-
-    /**
-     * Update stock of a game
-     * @param req game ID and new stock
-     * @param res success message
-     */
-
-    public async updateStock(req: Request, res: Response): Promise<void> {
-        try {
-            const sales = req.body.sales;
-
-            const game = await GameModel.findOneAndUpdate(
-                { _id: req.params.id },
-                { $inc: { stock: -sales, sales: sales } },
-                { new: true }
-            );
-
-            if (!game) {
-                res.status(404).json({ message: "Game not found" });
-                return;
-            }
-
-            if (game.stock <= 5) {
-                await StockAlertModel.create({
-                    game: game?.title,
-                    stock: req.body.stock,
-                });
-            }
-
-            res.status(200).json({ message: "Stock updated successfully" });
-        } catch (error) {
-            if (error instanceof Error) {
-                res.status(500).json({ message: error.message });
-            } else {
-                res.status(500).json({ message: "An unknown error occurred" });
-            }
-        }
     }
 }
 

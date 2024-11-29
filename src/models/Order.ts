@@ -24,6 +24,7 @@ export class Order {
         required: true,
         type: String,
         enum: ["pending", "inPreparation", "sent", "delivered"],
+        default: "pending",
     })
     public status!: string;
 
