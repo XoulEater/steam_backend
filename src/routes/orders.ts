@@ -4,9 +4,9 @@ import OrderController from "../controllers/orderController";
 const router = Router();
 const orderController = new OrderController();
 
-router.post("/orders/:id", orderController.createOrder);
-router.get("/orders/user/:id", orderController.getOrdersByUserId);
-router.get("/orders", orderController.getAllOrders);
-router.put("/orders/:id/status", orderController.modifyOrderStatus);
+router.post("/:id", orderController.createOrder);
+router.get("/user/:id", orderController.getOrdersByUserId);
+router.get("/", orderController.getAllOrders);
+router.put("/:id/status", orderController.modifyOrderStatus);
 
 export default router;
