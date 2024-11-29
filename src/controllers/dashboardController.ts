@@ -1,6 +1,7 @@
 import { Request, Response } from "express";
 import { GameModel } from "../models/Game";
 import { OrderModel } from "../models/Order";
+import { StockAlertModel } from "../models/StockAlert";
 
 class DashboardController {
     /**
@@ -51,6 +52,27 @@ class DashboardController {
             }
         }
     }
+
+    /**
+     * Get notifications
+     * @param req
+     * @param res
+     */
+    public async getNotifications(req: Request, res: Response): Promise<void> {
+        try {
+            // Get all notifications sorted by date
+            const notifications = await StockAlertModel.find().sort({ date: -1 });
+
+            res.status(200).json(notifications);
+        } catch (error) {
+            if (error instanceof Error) {
+                res.status(500).json({ message: error.message });
+            } else {
+                res.status(500).json({ message: "An unknown error occurred" });
+            }
+        }
+    }
+
 }
 
 export default DashboardController;
