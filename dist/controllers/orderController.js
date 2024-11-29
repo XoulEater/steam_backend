@@ -47,7 +47,7 @@ class OrderController {
                     if (updatedGame.stock <= 5) {
                         yield StockAlert_1.StockAlertModel.create({
                             game: game.game.title,
-                            stock: req.body.stock,
+                            stock: updatedGame.stock,
                         });
                     }
                 }));
