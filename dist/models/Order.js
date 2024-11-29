@@ -44,7 +44,7 @@ __decorate([
     __metadata("design:type", String)
 ], Order.prototype, "status", void 0);
 __decorate([
-    (0, typegoose_1.prop)({ required: true }),
+    (0, typegoose_1.prop)({ required: false, default: new Date() }),
     __metadata("design:type", Date)
 ], Order.prototype, "createdAt", void 0);
 exports.OrderModel = (0, typegoose_1.getModelForClass)(Order);

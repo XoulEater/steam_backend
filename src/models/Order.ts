@@ -28,7 +28,7 @@ export class Order {
     })
     public status!: string;
 
-    @prop({ required: true })
+    @prop({ required: false, default: new Date() })
     public createdAt!: Date;
 }
 
