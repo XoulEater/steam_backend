@@ -11,6 +11,7 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
 Object.defineProperty(exports, "__esModule", { value: true });
 const Game_1 = require("../models/Game");
 const Order_1 = require("../models/Order");
+const StockAlert_1 = require("../models/StockAlert");
 class DashboardController {
     /**
      * Top 5 most sold games
@@ -55,6 +56,28 @@ class DashboardController {
                     },
                 ]).sort({ _id: 1 });
                 res.status(200).json(orders);
+            }
+            catch (error) {
+                if (error instanceof Error) {
+                    res.status(500).json({ message: error.message });
+                }
+                else {
+                    res.status(500).json({ message: "An unknown error occurred" });
+                }
+            }
+        });
+    }
+    /**
+     * Get notifications
+     * @param req
+     * @param res
+     */
+    getNotifications(req, res) {
+        return __awaiter(this, void 0, void 0, function* () {
+            try {
+                // Get all notifications sorted by date
+                const notifications = yield StockAlert_1.StockAlertModel.find().sort({ date: -1 });
+                res.status(200).json(notifications);
             }
             catch (error) {
                 if (error instanceof Error) {
